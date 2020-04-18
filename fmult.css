@@ -1,0 +1,29 @@
+
+.fnFont {
+    font-size: 10pt;
+    font-family: sans;
+    color: cornflowerblue;
+}
+
+.clsTXT {
+    width:100%;
+    height: 44%;
+    outline: none;
+    display: block;
+}
+
+.noWrap {
+    white-space: nowrap;    
+}
+
+.xyScroll {
+    overflow: scroll;    
+}
+
+.xScroll {
+    overflow-x: scroll;    
+}
+
+.yScroll {
+    overflow-y: scroll;    
+}
