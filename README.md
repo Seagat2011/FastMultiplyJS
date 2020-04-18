@@ -1,2 +1,2 @@
 # FastMultiplyJS
-Fast long integer multiply routine implemented in javascript
+Fast multiply routine implemented in javascript
