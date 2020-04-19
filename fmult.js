@@ -2,11 +2,11 @@
     AUTHOR
         Seagat2011 (fold.it/portal/user/199249)
     DESCRIPTION
-        FAST MULTIPLY (MULTI-OPERAND) ALGORITHM
+        FAST MULTIPLY ALGORITHM (FastMultiplyJS)
     VERSION MAJOR.MINOR.BUGFIX.PATCH
         3.0.0.0
 	NOTES
-		Max out resolution (digits) 20 (11x10))
+		Fast multiply routine (long integer), implemented in javascript
     INPUT
 24642324324586858756587657658756785857656856756554563432456458796987907097897987656745632232322453654587657860979088768689687665654563543543453647658757865586987698698686897968966986796768656565465343
 16246896856757858685875658765765875678585765685675655456343245645877656757658757856669070978979876567456322323224536545876578609790887686896876656545635435434536476587578655869876986986868979689669867
@@ -96,7 +96,7 @@ Object.prototype.getDecimal = function(u){
 		return ''
 	})
 }
-Object.prototype.putDecimal = function(u){
+Object.prototype.placeDecimal = function(u){
 	var self = this
 	if(u.dot){
 		var w = self[u.dot]
@@ -131,7 +131,7 @@ function Main(){
 					var idx
 					RESULT.map((v,j,meThree)=>{
 						idx = (i+j)
-						var w = `${ u }${ v }${ carry }${ LHS.getIDX(idx) }`
+						var w = u + v + carry + LHS.getIDX(idx)
 						var y = MWC[w]
 						carry = y[0]
 						LHS[idx] = y[1]
@@ -139,7 +139,7 @@ function Main(){
 					});
 					if(carry > '0'){
 						idx++
-						var w = `${ '00' }${ carry }${ LHS.getIDX(idx) }`
+						var w = '00' + carry + LHS.getIDX(idx)
 						var y = MWC[w]
 						LHS[idx] = y[1]
 						carry = '0'
@@ -152,7 +152,7 @@ function Main(){
 			}
 			return op1
 		});
-		RET = RESULT.putDecimal(decimalPoint).asLONG()
+		RET = RESULT.placeDecimal(decimalPoint).asLONG()
 		src.gLAST=src.innerText.replace(/\n+/g,'\n') // SUCCESS //
 	} catch(e) {
 		RET = e
