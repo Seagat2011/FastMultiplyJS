@@ -49,25 +49,6 @@ Object.prototype.totalTicks = function(){
 Object.prototype.getTick = function(){
 	return (Date().toString()).match(/(\d+:\d+:\d+)/)[0].split(/:/)
 }
-Object.prototype.padLZero = function(i){
-    var self = this
-    while(i--)
-        self.unshift('0')
-    return self
-}
-Object.prototype.Zero = function(){
-    var self = this
-    return self.map((u,i,me)=>{
-        return '0'
-    })
-}
-Object.prototype.unpadLZero = function(){
-    var self = this
-    var i = this.length - 1
-    while((self[i--] == '0') && !self[i].match(/\./))
-        self.pop()
-    return self
-}
 Object.prototype.asReverseArray = function(){
 	return this.split('').reverse()
 }
@@ -84,33 +65,23 @@ Object.prototype.splitLines = function(){
     });
 	return ret
 }
-Object.prototype.getIDX = function(i){
-	return this[i] || '0'
-}
-Object.prototype.asLONG = function(){
-	return this.unpadLZero().reverse().join('')
-}
 Object.prototype.getDecimal = function(u){
-	return this.replace(/\./,(_,i,me)=>{ 
+	return this.replace(/\./,(_,i,me)=>{
 		u.dot += (me.length-i-1)
 		return ''
 	})
 }
 Object.prototype.placeDecimal = function(u){
 	var self = this
-	if(u.dot){
-		var w = self[u.dot]
-		self[u.dot] = `${w}.`
+	if(u.dot>0){
+        var v = (self.toString()).split('')
+        var I = v.length
+        var i = I-u.dot-1
+		var w = v[i]
+		v[i] = `${w}.`
+        self=v.join('')
 	}
 	return self
-}
-var MWC = { /* Multiply With Carry : ( op1.op2.carry.result : carry.result ) */ }
-for(var i=0;i<1e4;i++){
-    var u=i.toString().padBlock(4,'0')
-    var w=u.split('').map((v)=>{
-        return Number(v)
-    });
-    MWC[u]=((w[0]*w[1])+(w[2]+w[3])).toString().padBlock(2,'0')
 }
 function Main(){
 	if(src.gLAST==src.innerText.replace(/\n+/g,'\n'))
@@ -119,40 +90,18 @@ function Main(){
 	var dte = [RET.getTick()]
 	var decimalPoint = { dot:0 }
 	try {
-		var RESULT = [];
+		var RESULT = '';
 		var operands = src.innerText.splitLines();
 		operands.map((op1,m,meOne)=>{
+            op1=op1.getDecimal(decimalPoint)
 			if(m != 0){
-				var carry = '0'
-				var LHS = []
-				var RHS = op1.getDecimal(decimalPoint).asReverseArray()
-				LHS.padLZero(op1.length)
-				RHS.map((u,i,meTwo)=>{
-					var idx
-					RESULT.map((v,j,meThree)=>{
-						idx = (i+j)
-						var w = u + v + carry + LHS.getIDX(idx)
-						var y = MWC[w]
-						carry = y[0]
-						LHS[idx] = y[1]
-						return v
-					});
-					if(carry > '0'){
-						idx++
-						var w = '00' + carry + LHS.getIDX(idx)
-						var y = MWC[w]
-						LHS[idx] = y[1]
-						carry = '0'
-					}
-					return u
-				});
-				RESULT = LHS
+                RESULT *= BigInt(op1)
 			} else {
-				RESULT = [...op1.getDecimal(decimalPoint).asReverseArray()]
-			}
+                RESULT = BigInt(op1)
+            }
 			return op1
 		});
-		RET = RESULT.placeDecimal(decimalPoint).asLONG()
+		RET = RESULT.placeDecimal(decimalPoint)
 		src.gLAST=src.innerText.replace(/\n+/g,'\n') // SUCCESS //
 	} catch(e) {
 		RET = e
